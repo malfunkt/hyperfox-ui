@@ -1,4 +1,6 @@
-import React from 'react';
+import React from 'react'
+
+import classNames from 'classnames'
 
 export default class Paginator extends React.Component {
 
@@ -6,49 +8,91 @@ export default class Paginator extends React.Component {
     super(props)
 
     this.state = {
-      selected: props.selected,
-      pages: props.pages
+      selected: Math.max(1, Math.min(props.selected, props.pages)),
+      pages: Math.max(0, props.pages)
     }
   }
 
-  ellipsis() {
-    return (
-      <li>
-        <span className="pagination-ellipsis">&hellip;</span>
-      </li>
-    )
+  handleClick(page) {
+    this.props.onSelectPage(page)
+    return false
   }
 
   renderPageNumbers() {
-    /*
-          <li>
-            <a className="pagination-link" aria-label="Goto page 1">1</a>
-          </li>
-          <li>
-            <a className="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a>
-          </li>
-          <li>
-            <a className="pagination-link" aria-label="Goto page 47">47</a>
-          </li>
 
-          <li>
-            <a className="pagination-link" aria-label="Goto page 86">86</a>
-          </li>
-     * */
-    return []
-    return ([
-      <li>
-        <a className="pagination-link" aria-label="Goto page 45">45</a>
-      </li>
-    ])
+    if (this.props.pages < 1) {
+      return []
+    }
+
+    const lowerBound = Math.max(this.state.selected - 1, 1)
+    const upperBound = Math.min(lowerBound + 2, this.state.pages)
+
+    let pages = []
+
+    if (lowerBound > 1) {
+      pages.push(
+        <li
+          key='page-prev'
+        >
+          <span className='pagination-ellipsis pagination-left-ellipsis'>&hellip;</span>
+        </li>
+      )
+    }
+
+    let i = 0
+    for (i = lowerBound; i <= upperBound; i++) {
+      let classes = classNames('pagination-link', {'is-current': i === this.state.selected})
+      let li = (
+        <li key={`page-${i}`}>
+          <button
+            className={classes}
+            onClick={this.handleClick.bind(this, i)}
+            aria-label={`Goto page ${i}`}
+          >
+            {i}
+          </button>
+        </li>
+      )
+      pages.push(li)
+    }
+
+    if (this.props.pages - upperBound > 1) {
+      pages.push(
+        <li
+          key='page-next'
+        >
+          <span className='pagination-ellipsis pagination-right-ellipsis'>&hellip;</span>
+        </li>
+      )
+    }
+
+    return pages
   }
 
   render() {
+    const showPrevious = this.state.selected > 1
+    const showNext = (this.state.pages - this.state.selected) > 1
+
     return (
-      <nav className="pagination is-centered" role="navigation" aria-label="pagination">
-        <a className="pagination-previous" disabled>Previous</a>
-        <a className="pagination-next" disabled>Next page</a>
-        <ul className="pagination-list">
+      <nav className='pagination is-centered' role='navigation' aria-label='pagination'>
+
+        <button
+          type='button'
+          className='pagination-previous'
+          onClick={
+            () => this.handleClick(this.state.selected - 1)
+          }
+          disabled={!showPrevious}>Previous</button>
+
+        <button
+          type='button'
+          className='pagination-next'
+          onClick={
+            () => this.handleClick(this.state.selected + 1)
+          }
+          disabled={!showNext}>Next page</button>
+
+        <ul className='pagination-list'>
           {this.renderPageNumbers()}
         </ul>
       </nav>
@@ -57,6 +101,9 @@ export default class Paginator extends React.Component {
 }
 
 Paginator.defaultProps = {
+  onSelectPage: (pageNumber) => {
+    console.log({selectedPage: pageNumber})
+  },
   selected: 0,
   pages: 0
 }
