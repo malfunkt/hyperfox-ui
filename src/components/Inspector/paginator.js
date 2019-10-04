@@ -14,6 +14,7 @@ export default class Paginator extends React.Component {
   }
 
   handleClick(page) {
+    this.setState({selected: page})
     this.props.onSelectPage(page)
     return false
   }
@@ -71,7 +72,7 @@ export default class Paginator extends React.Component {
 
   render() {
     const showPrevious = this.state.selected > 1
-    const showNext = (this.state.pages - this.state.selected) > 1
+    const showNext = (this.state.pages - this.state.selected) > 0
 
     return (
       <nav className='pagination is-centered' role='navigation' aria-label='pagination'>

@@ -96,8 +96,6 @@ describe('Paginator', () => {
     expect(selectedPage.props.children).toBe(1)
   })
 
-  return
-
   test('it shows disabled prev button, enabled next button and two pages (first one is selected by default)', () => {
     const component = create(<Paginator pages={2} selected={1} />)
     const instance = component.root
@@ -107,10 +105,10 @@ describe('Paginator', () => {
     const pageNumbers = findPageNumbers(instance)
     const selectedPage = findSelectedPage(instance)
 
-    expect(paginationPrevious.props.disabled).toBe(false)
-    expect(paginationNext.props.disabled).toBe(true)
+    expect(paginationPrevious.props.disabled).toBe(true)
+    expect(paginationNext.props.disabled).toBe(false)
     expect(pageNumbers.length).toBe(2)
-    expect(selectedPage).toBe(1)
+    expect(selectedPage.props.children).toBe(1)
   })
 
   test('it shows disabled next button, enabled prev button and two pages (second one is selected)', () => {
@@ -122,10 +120,10 @@ describe('Paginator', () => {
     const pageNumbers = findPageNumbers(instance)
     const selectedPage = findSelectedPage(instance)
 
-    expect(paginationPrevious.props.disabled).toBe(true)
-    expect(paginationNext.props.disabled).toBe(false)
+    expect(paginationPrevious.props.disabled).toBe(false)
+    expect(paginationNext.props.disabled).toBe(true)
     expect(pageNumbers.length).toBe(2)
-    expect(selectedPage).toBe(2)
+    expect(selectedPage.props.children).toBe(2)
   })
 
   test('it shows enabled prev/next buttons and three pages (second page is selected)', () => {
@@ -140,10 +138,10 @@ describe('Paginator', () => {
     expect(paginationPrevious.props.disabled).toBe(false)
     expect(paginationNext.props.disabled).toBe(false)
     expect(pageNumbers.length).toBe(3)
-    expect(selectedPage).toBe(3)
+    expect(selectedPage.props.children).toBe(2)
   })
 
-  test('it shows disabled next button, enabled prev button and three pages (third page is selected)', () => {
+  test('it shows disabled next button, enabled prev button and two pages (third page is selected)', () => {
     const component = create(<Paginator pages={3} selected={3} />)
     const instance = component.root
 
@@ -154,11 +152,11 @@ describe('Paginator', () => {
 
     expect(paginationPrevious.props.disabled).toBe(false)
     expect(paginationNext.props.disabled).toBe(true)
-    expect(pageNumbers.length).toBe(3)
-    expect(selectedPage).toBe(3)
+    expect(pageNumbers.length).toBe(2)
+    expect(selectedPage.props.children).toBe(3)
   })
 
-  test('it shows disabled prev button, enabled next button and four pages', () => {
+  test('it shows disabled prev button, enabled next button and three pages', () => {
     const component = create(<Paginator pages={4} />)
     const instance = component.root
 
@@ -169,11 +167,11 @@ describe('Paginator', () => {
 
     expect(paginationPrevious.props.disabled).toBe(true)
     expect(paginationNext.props.disabled).toBe(false)
-    expect(pageNumbers.length).toBe(4)
-    expect(selectedPage).toBe(1)
+    expect(pageNumbers.length).toBe(3)
+    expect(selectedPage.props.children).toBe(1)
   })
 
-  test('it shows disabled prev button, enabled next button and five pages', () => {
+  test('it shows disabled prev button, enabled next button and three pages', () => {
     const component = create(<Paginator pages={5} />)
     const instance = component.root
 
@@ -184,11 +182,11 @@ describe('Paginator', () => {
 
     expect(paginationPrevious.props.disabled).toBe(true)
     expect(paginationNext.props.disabled).toBe(false)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(1)
+    expect(pageNumbers.length).toBe(3)
+    expect(selectedPage.props.children).toBe(1)
   })
 
-  test('it shows enabled prev/next buttons and five pages (fourth page is selected)', () => {
+  test('it shows enabled prev/next buttons and three pages (fourth page is selected)', () => {
     const component = create(<Paginator pages={5} selected={3} />)
     const instance = component.root
 
@@ -199,11 +197,11 @@ describe('Paginator', () => {
 
     expect(paginationPrevious.props.disabled).toBe(false)
     expect(paginationNext.props.disabled).toBe(false)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(3)
+    expect(pageNumbers.length).toBe(3)
+    expect(selectedPage.props.children).toBe(3)
   })
 
-  test('it shows disabled next button, enabled prev button and five pages (fifth page is selected)', () => {
+  test('it shows disabled next button, enabled prev button and three pages (fifth page is selected)', () => {
     const component = create(<Paginator pages={5} selected={5} />)
     const instance = component.root
 
@@ -214,8 +212,8 @@ describe('Paginator', () => {
 
     expect(paginationPrevious.props.disabled).toBe(false)
     expect(paginationNext.props.disabled).toBe(true)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(4)
+    expect(pageNumbers.length).toBe(2)
+    expect(selectedPage.props.children).toBe(5)
   })
 
   test('it shows right ellipsis', () => {
@@ -230,13 +228,13 @@ describe('Paginator', () => {
 
     expect(paginationPrevious.props.disabled).toBe(true)
     expect(paginationNext.props.disabled).toBe(false)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(1)
+    expect(pageNumbers.length).toBe(3)
+    expect(selectedPage.props.children).toBe(1)
     expect(rightEllipsis)
   })
 
   test('it shows right ellipsis', () => {
-    const component = create(<Paginator pages={7} />)
+    const component = create(<Paginator pages={7} selected={2} />)
     const instance = component.root
 
     const paginationPrevious = findPaginationPrevious(instance)
@@ -245,26 +243,27 @@ describe('Paginator', () => {
     const selectedPage = findSelectedPage(instance)
     const rightEllipsis = findRightEllipsis(instance)
 
-    expect(paginationPrevious.props.disabled).toBe(true)
-    expect(paginationNext.props.disabled).toBe(true)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(1)
+    expect(paginationPrevious.props.disabled).toBe(false)
+    expect(paginationNext.props.disabled).toBe(false)
+    expect(pageNumbers.length).toBe(3)
+    expect(selectedPage.props.children).toBe(2)
     expect(rightEllipsis)
   })
 
   test('it shows right ellipsis', () => {
-    const component = create(<Paginator pages={88} />)
+    const component = create(<Paginator pages={88} selected={39} />)
     const instance = component.root
 
     const paginationPrevious = findPaginationPrevious(instance)
     const paginationNext = findPaginationNext(instance)
     const pageNumbers = findPageNumbers(instance)
     const selectedPage = findSelectedPage(instance)
+    const rightEllipsis = findRightEllipsis(instance)
 
-    expect(paginationPrevious.props.disabled).toBe(true)
-    expect(paginationNext.props.disabled).toBe(true)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(1)
+    expect(paginationPrevious.props.disabled).toBe(false)
+    expect(paginationNext.props.disabled).toBe(false)
+    expect(pageNumbers.length).toBe(3)
+    expect(selectedPage.props.children).toBe(39)
     expect(rightEllipsis)
   })
 
@@ -278,10 +277,10 @@ describe('Paginator', () => {
     const selectedPage = findSelectedPage(instance)
     const leftEllipsis = findLeftEllipsis(instance)
 
-    expect(paginationPrevious.props.disabled).toBe(true)
-    expect(paginationNext.props.disabled).toBe(true)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(4)
+    expect(paginationPrevious.props.disabled).toBe(false)
+    expect(paginationNext.props.disabled).toBe(false)
+    expect(pageNumbers.length).toBe(3)
+    expect(selectedPage.props.children).toBe(4)
     expect(leftEllipsis)
   })
 
@@ -296,29 +295,10 @@ describe('Paginator', () => {
     const leftEllipsis = findLeftEllipsis(instance)
     const rightEllipsis = findRightEllipsis(instance)
 
-    expect(paginationPrevious.props.disabled).toBe(true)
-    expect(paginationNext.props.disabled).toBe(true)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(3)
-    expect(leftEllipsis)
-    expect(rightEllipsis)
-  })
-
-  test('it shows both ellipses', () => {
-    const component = create(<Paginator pages={12} selected={5} />)
-    const instance = component.root
-
-    const paginationPrevious = findPaginationPrevious(instance)
-    const paginationNext = findPaginationNext(instance)
-    const pageNumbers = findPageNumbers(instance)
-    const selectedPage = findSelectedPage(instance)
-    const leftEllipsis = findLeftEllipsis(instance)
-    const rightEllipsis = findRightEllipsis(instance)
-
-    expect(paginationPrevious.props.disabled).toBe(true)
-    expect(paginationNext.props.disabled).toBe(true)
-    expect(pageNumbers.length).toBe(5)
-    expect(selectedPage).toBe(3)
+    expect(paginationPrevious.props.disabled).toBe(false)
+    expect(paginationNext.props.disabled).toBe(false)
+    expect(pageNumbers.length).toBe(3)
+    expect(selectedPage.props.children).toBe(3)
     expect(leftEllipsis)
     expect(rightEllipsis)
   })
