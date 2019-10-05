@@ -57,7 +57,7 @@ export default class Paginator extends React.Component {
       pages.push(li)
     }
 
-    if (this.props.pages - upperBound > 1) {
+    if (this.props.pages - upperBound > 0) {
       pages.push(
         <li
           key='page-next'

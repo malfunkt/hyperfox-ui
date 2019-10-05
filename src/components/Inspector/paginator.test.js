@@ -164,11 +164,13 @@ describe('Paginator', () => {
     const paginationNext = findPaginationNext(instance)
     const pageNumbers = findPageNumbers(instance)
     const selectedPage = findSelectedPage(instance)
+    const rightEllipsis = findRightEllipsis(instance)
 
     expect(paginationPrevious.props.disabled).toBe(true)
     expect(paginationNext.props.disabled).toBe(false)
     expect(pageNumbers.length).toBe(3)
     expect(selectedPage.props.children).toBe(1)
+    expect(rightEllipsis)
   })
 
   test('it shows disabled prev button, enabled next button and three pages', () => {
