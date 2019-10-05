@@ -32,32 +32,6 @@ const findTableRows = (instance) => {
   return findAllByClassName(instance, 'table-row')
 }
 
-/*
-const findPaginationPrevious = (instance) => {
-  return findByClassName(instance, 'pagination-previous')
-}
-
-const findPaginationNext = (instance) => {
-  return findByClassName(instance, 'pagination-next')
-}
-
-const findPageNumbers = (instance) => {
-  return findAllByClassName(instance, 'pagination-link')
-}
-
-const findSelectedPage = (instance) => {
-  return findByClassName(instance, 'is-current')
-}
-
-const findLeftEllipsis = (instance) => {
-  return findByClassName(instance, 'pagination-left-ellipsis')
-}
-
-const findRightEllipsis = (instance) => {
-  return findByClassName(instance, 'pagination-right-ellipsis')
-}
-*/
-
 describe('Table', () => {
   test('it displays zero elements', () => {
     const component = create(<Table />)
