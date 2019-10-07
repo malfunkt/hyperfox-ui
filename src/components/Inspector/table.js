@@ -52,6 +52,11 @@ export default class Table extends React.Component {
     return nanosecs + 'ns'
   }
 
+  handleRowClick(ev, id) {
+    console.log({ev})
+    console.log({id})
+  }
+
   drawRows() {
     const { requests } = this.state
 
@@ -59,13 +64,19 @@ export default class Table extends React.Component {
     for (let i = 0; i < Math.min(requests.length, this.props.pageSize); i++) {
       let r = requests[i]
       rows.push(
-        <tr key={`row-${i}`} className='table-row'>
+        <tr key={`row-${r.ID}`} className='table-row' onClick={(ev) => { this.handleRowClick(ev, r.ID) }}>
           <td>{r.method}</td>
           <td>{r.url}</td>
           <td>{r.contentType}</td>
           <td>{r.status}</td>
-          <td>{moment(r.time).fromNow()}</td>
+          <td>{r.size}</td>
           <td>{this.timeTaken(r.timeTaken)}</td>
+          <td>{moment(r.time).fromNow()}</td>
+          <td>
+            <span className='icon'>
+              <i className='oi' data-glyph='data-transfer-download'></i>
+            </span>
+          </td>
         </tr>
       )
     }
@@ -80,10 +91,12 @@ export default class Table extends React.Component {
           <tr>
             <th>Method</th>
             <th>URL</th>
-            <th>Content type</th>
-            <th>Response code</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Size</th>
+            <th>Time</th>
             <th>Date</th>
-            <th>Time taken</th>
+            <th></th>
           </tr>
         </thead>
         <tbody className='table-rows'>

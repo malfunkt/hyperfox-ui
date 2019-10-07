@@ -24,6 +24,7 @@ export default class Inspector extends React.Component {
       method: r.method,
       status: r.status,
       url: r.url,
+      size: r.content_length,
       timeTaken: r.time_taken,
       contentType: r.content_type,
       time: r.date_end
