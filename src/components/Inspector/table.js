@@ -16,8 +16,12 @@ export default class Table extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dataSource().then(requests => {
-      this.setState({requests: requests})
+    this.props.dataSource().then(res => {
+      this.setState({requests: res.requests.map(this.props.dataMapper)})
+    })
+    this.props.dataStream((data) => {
+      console.log({data})
+      this.pushRequest(this.props.dataMapper(data))
     })
   }
 
@@ -29,8 +33,8 @@ export default class Table extends React.Component {
 
   pushRequest(request) {
     this.setState(state => {
-      const rows = state.requests.concat(request)
-      return {rows}
+      const requests = state.requests.concat(request)
+      return {requests}
     })
   }
 
@@ -91,6 +95,8 @@ export default class Table extends React.Component {
 }
 
 Table.defaultProps = {
+  dataMapper: r => r,
+  dataStream: () => {},
   dataSource: new Promise((resolve) => { resolve() }),
   requests: [],
   pageSize: 10,
