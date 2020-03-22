@@ -7,20 +7,22 @@ import Search from './search'
 import * as API from '../../lib/hyperfox'
 
 export default class Inspector extends React.Component {
+
   constructor(props) {
     super(props)
 
     this.state = {
       terms: '',
 
+      pageSize: 10,
       selectedPage: 1,
-      pages: 4,
+      totalPages: 1,
     }
   }
 
   tableRowMapper(r) {
     return {
-      ID: r.id,
+      UUID: r.uuid,
       method: r.method,
       status: r.status,
       url: r.url,
@@ -37,21 +39,31 @@ export default class Inspector extends React.Component {
         <Search term={this.state.terms} />
 
         <Table
-          pageSize={10}
+          page={this.state.selectedPage}
+          pageSize={this.state.pageSize}
+
+          setSelectedPage={selectedPage => {
+            this.setState({selectedPage})
+          }}
+          setTotalPages={totalPages => {
+            this.setState({totalPages})
+          }}
+
           dataMapper={this.tableRowMapper}
-          dataStream={
-            (fn) => {
-              API.Subscribe(fn)
-            }
-          }
           dataSource={
-            () => {
-              return API.Pull()
+            (params) => {
+              return API.Records(params)
             }
           }
         />
 
-        <Paginator />
+        <Paginator
+          onSelectPage={(selectedPage) => {
+            this.setState({selectedPage})
+          }}
+          selected={this.state.selectedPage}
+          pages={this.state.totalPages}
+        />
       </div>
     )
   }

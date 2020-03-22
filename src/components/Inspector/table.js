@@ -2,6 +2,8 @@ import React from 'react'
 
 import classNames from 'classnames'
 
+import * as API from '../../lib/hyperfox'
+
 import * as moment from 'moment'
 
 export default class Table extends React.Component {
@@ -10,19 +12,52 @@ export default class Table extends React.Component {
     super(props)
 
     this.state = {
+      paginator: null,
+      page: this.props.page || 1,
+      pageSize:this.props.pageSize || 10,
       selected: null,
-      requests: this.props.requests || []
+      setSelectedPage: () => {},
+      setTotalPages: () => {},
+      records: []
     }
   }
 
-  componentDidMount() {
-    this.props.dataSource().then(res => {
-      this.setState({requests: res.requests.map(this.props.dataMapper)})
-    })
-    this.props.dataStream((data) => {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let patchState = {}
+    if (nextProps.page != prevState.page) {
+      patchState.page = nextProps.page
+    }
+    console.log({patchState})
+    return patchState
+  }
+
+  updateDataSource() {
+    const params = {
+      page_size: this.state.pageSize,
+      page: this.state.page
+    }
+    this.props.dataSource(params).then(data => {
       console.log({data})
-      this.pushRequest(this.props.dataMapper(data))
+      this.setState({
+        records: data.records.map(this.props.dataMapper)
+      })
+      this.props.setSelectedPage(data.page)
+      this.props.setTotalPages(data.pages)
     })
+  }
+
+  componentDidMount() {
+    this.updateDataSource()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    let update = false
+    if (prevState.page != this.state.page) {
+      update = true
+    }
+    if (update) {
+      this.updateDataSource()
+    }
   }
 
   handleSelectRow(rowID) {
@@ -33,8 +68,8 @@ export default class Table extends React.Component {
 
   pushRequest(request) {
     this.setState(state => {
-      const requests = state.requests.concat(request)
-      return {requests}
+      const records = state.records.concat(request)
+      return {records}
     })
   }
 
@@ -57,24 +92,35 @@ export default class Table extends React.Component {
     console.log({id})
   }
 
+  shortUUID(uuid) {
+    return uuid.substr(0, 8)
+  }
+
   drawRows() {
-    const { requests } = this.state
+    const { records } = this.state
 
     let rows = []
-    for (let i = 0; i < Math.min(requests.length, this.props.pageSize); i++) {
-      let r = requests[i]
+    const limit = Math.min(records.length, this.props.pageSize)
+    for (let i = 0; i < limit; i++) {
+      let record = records[i]
       rows.push(
-        <tr key={`row-${r.ID}`} className='table-row' onClick={(ev) => { this.handleRowClick(ev, r.ID) }}>
-          <td>{r.method}</td>
-          <td>{r.url}</td>
-          <td>{r.contentType}</td>
-          <td>{r.status}</td>
-          <td>{r.size}</td>
-          <td>{this.timeTaken(r.timeTaken)}</td>
-          <td>{moment(r.time).fromNow()}</td>
+        <tr key={`row-${record.UUID}`} className='table-row'>
+          <td>{this.shortUUID(record.UUID)}</td>
+          <td>{record.method}</td>
+          <td>{record.url}</td>
+          <td>{record.contentType}</td>
+          <td>{record.status}</td>
+          <td>{record.size}</td>
+          <td>{this.timeTaken(record.timeTaken)}</td>
+          <td>{moment(record.time).fromNow()}</td>
           <td>
             <span className='icon'>
-              <i className='oi' data-glyph='data-transfer-download'></i>
+              <a href={`/records/${record.UUID}`}>
+                <i className='oi' data-glyph='eye'></i>
+              </a>
+              <a href={API.RecordResponseURL(record.UUID)}>
+                <i className='oi' data-glyph='data-transfer-download'></i>
+              </a>
             </span>
           </td>
         </tr>
@@ -89,6 +135,7 @@ export default class Table extends React.Component {
       <table className='table is-fullwidth is-scrollable'>
         <thead>
           <tr>
+            <th>ID</th>
             <th>Method</th>
             <th>URL</th>
             <th>Type</th>
@@ -109,11 +156,9 @@ export default class Table extends React.Component {
 
 Table.defaultProps = {
   dataMapper: r => r,
-  dataStream: () => {},
   dataSource: new Promise((resolve) => { resolve() }),
-  requests: [],
+  setSelectedPage: () => {},
+  setTotalPages: () => {},
+  page: 1,
   pageSize: 10,
-  onSelectRow: (rowID) => {
-    console.log({rowID})
-  }
 }

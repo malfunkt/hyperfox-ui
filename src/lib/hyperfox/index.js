@@ -1,7 +1,8 @@
-const DEFAULT_API_PREFIX='http://10.0.0.88:8899'
-const DEFAULT_WS_PREFIX='ws://10.0.0.88:8899/ws'
+const DEFAULT_API_PREFIX='http://127.0.0.1:8899'
+const DEFAULT_WS_PREFIX='ws://127.0.0.1:8899/live'
 
 let W3CWebSocket = require('websocket').w3cwebsocket
+let qs = require('qs')
 
 class Hyperfox {
   constructor(props) {
@@ -15,12 +16,14 @@ class Hyperfox {
     let ws = new W3CWebSocket(DEFAULT_WS_PREFIX);
 
     ws.onopen = (e) => {
+      console.log('GOT SOCKET')
       if (e.data) {
         console.log('OPEN WS', JSON.parse(e.data))
       }
     }
 
     ws.onmessage = (e) => {
+      console.log({e})
       let data = JSON.parse(e.data)
       if (data) {
         this._wsOnmessage(data)
@@ -38,7 +41,8 @@ class Hyperfox {
   }
 
   _fetch(type, path, params) {
-    return fetch(this.prefix + path)
+    const queryString = qs.stringify(params)
+    return fetch(this.prefix + path + '?' + queryString)
       .then(res => res.json())
   }
 
@@ -46,8 +50,36 @@ class Hyperfox {
     this._wsOnmessage = callback
   }
 
-  Pull(params) {
-    return this._fetch('GET', '/pull', params)
+  RecordRequestEmbedURL(uuid) {
+    return `${this.prefix}/records/${uuid}/request/embed`
+  }
+
+  RecordRequestWireURL(uuid) {
+    return `${this.prefix}/records/${uuid}/request/wire`
+  }
+
+  RecordRequestURL(uuid) {
+    return `${this.prefix}/records/${uuid}/request`
+  }
+
+  RecordResponseEmbedURL(uuid) {
+    return `${this.prefix}/records/${uuid}/response/embed`
+  }
+
+  RecordResponseWireURL(uuid) {
+    return `${this.prefix}/records/${uuid}/response/wire`
+  }
+
+  RecordResponseURL(uuid) {
+    return `${this.prefix}/records/${uuid}/response`
+  }
+
+  GetRecordMeta(uuid) {
+    return this._fetch('GET', `/records/${uuid}`, {})
+  }
+
+  Records(params) {
+    return this._fetch('GET', '/records', params)
   }
 }
 

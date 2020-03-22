@@ -19,6 +19,17 @@ export default class Paginator extends React.Component {
     return false
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let patchState = {}
+    if (nextProps.pages != prevState.pages) {
+      patchState.pages = nextProps.pages
+    }
+    if (nextProps.selected != prevState.selected) {
+      patchState.selected = nextProps.selected
+    }
+    return patchState
+  }
+
   renderPageNumbers() {
 
     if (this.props.pages < 1) {
@@ -102,9 +113,7 @@ export default class Paginator extends React.Component {
 }
 
 Paginator.defaultProps = {
-  onSelectPage: (pageNumber) => {
-    console.log({selectedPage: pageNumber})
-  },
+  onSelectPage: () => {},
   selected: 0,
   pages: 0
 }
