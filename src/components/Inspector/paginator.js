@@ -84,7 +84,7 @@ export default class Paginator extends React.Component {
     const showNext = (this.state.pages - this.state.selected) > 0
 
     return (
-      <nav className='pagination is-centered' role='navigation' aria-label='pagination'>
+      <nav className='pagination' role='navigation' aria-label='pagination'>
 
         <button
           type='button'

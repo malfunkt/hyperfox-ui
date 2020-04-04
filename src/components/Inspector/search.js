@@ -27,6 +27,9 @@ export default class Search extends React.Component {
         <div className='control'>
           <input
             className='input'
+            onFocus={(ev) => {
+              ev.target.select()
+            }}
             onChange={(ev) => {
               this.updateValue(ev.target.value)
             }}

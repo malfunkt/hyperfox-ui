@@ -46,8 +46,14 @@ export default class Table extends React.Component {
     return nanosecs + 'ns'
   }
 
-  shortUUID(uuid) {
-    return uuid.substr(0, 8)
+  rangeWidth(minWidth, maxWidth) {
+    return {
+      'minWidth': `${minWidth}px`,
+      'maxWidth': `${maxWidth}px`,
+      'overflow': 'hidden',
+      'textOverflow': 'ellipsis',
+      'whiteSpace': 'nowrap'
+    }
   }
 
   renderRows() {
@@ -56,17 +62,35 @@ export default class Table extends React.Component {
     let rows = []
     for (let i = 0; i < records.length; i++) {
       let record = records[i]
+      let timeTaken = this.timeTaken(record.timeTaken)
+      let timeAgo = moment(record.time).fromNow()
       rows.push(
         <tr key={`row-${record.UUID}`} className='table-row'>
-          <td>{this.shortUUID(record.UUID)}</td>
-          <td>{record.method}</td>
-          <td>{record.url}</td>
-          <td>{record.contentType}</td>
-          <td>{record.status}</td>
-          <td>{record.size}</td>
-          <td>{this.timeTaken(record.timeTaken)}</td>
-          <td>{moment(record.time).fromNow()}</td>
-          <td>
+          <td style={this.rangeWidth(10, 60)}>
+            <tt>{record.UUID}</tt>
+          </td>
+          <td style={this.rangeWidth(10, 60)}>
+            <tt>{record.method}</tt>
+          </td>
+          <td style={this.rangeWidth(80, 100000)} title={record.url}>
+            <tt>{record.url}</tt>
+          </td>
+          <td style={this.rangeWidth(60, 220)} title={record.contentType}>
+            <tt>{record.contentType}</tt>
+          </td>
+          <td style={{...this.rangeWidth(40, 60), ...{'textAlign': 'center'}}}>
+            <tt>{record.status}</tt>
+          </td>
+          <td style={{...this.rangeWidth(20, 60), ...{'textAlign': 'right'}}}>
+            <tt>{record.size}</tt>
+          </td>
+          <td style={{...this.rangeWidth(40, 80), ...{'textAlign': 'right'}}} title={timeTaken}>
+            <tt>{timeTaken}</tt>
+          </td>
+          <td style={{...this.rangeWidth(40, 120), ...{'textAlign': 'right'}}} title={timeAgo}>
+            <tt>{timeAgo}</tt>
+          </td>
+          <td style={this.rangeWidth(40, 60)}>
             <span className='icon'>
               <a href={`/records/${record.UUID}`}>
                 <i className='oi' data-glyph='eye'></i>
@@ -85,24 +109,26 @@ export default class Table extends React.Component {
 
   render() {
     return (
-      <table className='table is-fullwidth is-scrollable'>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Method</th>
-            <th>URL</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Size</th>
-            <th>Time</th>
-            <th>Date</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody className='table-rows'>
-          {this.renderRows()}
-        </tbody>
-      </table>
+      <div className="table-container">
+        <table className='table is-fullwidth is-scrollable is-hoverable'>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Method</th>
+              <th>URL</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Size</th>
+              <th>Time</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody className='table-rows'>
+            {this.renderRows()}
+          </tbody>
+        </table>
+      </div>
     )
   }
 }

@@ -105,12 +105,11 @@ export default class Inspector extends React.Component {
         })
       })
     })
-
   }
 
-  render() {
+  renderRecords() {
     return (
-      <div className="container is-widescreen">
+      <div>
         <Search
           onChange={value => {
             this.setState({terms: value})
@@ -133,6 +132,25 @@ export default class Inspector extends React.Component {
           selected={this.state.selectedPage}
           pages={this.state.totalPages}
         />
+      </div>
+    )
+  }
+
+  render() {
+    const {records} = this.state
+
+    return (
+      <div className="container is-widescreen">
+        <div className="notification is-warning">
+          Lost connection.
+        </div>
+
+        {records.length > 0 ? this.renderRecords() : (
+          <div className="notification is-info">
+            No records were found.
+          </div>
+        )}
+
       </div>
     )
   }
