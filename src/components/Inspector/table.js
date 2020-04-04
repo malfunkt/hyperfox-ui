@@ -1,9 +1,6 @@
 import React from 'react'
-
 import classNames from 'classnames'
-
 import * as API from '../../lib/hyperfox'
-
 import * as moment from 'moment'
 
 export default class Table extends React.Component {
@@ -12,64 +9,27 @@ export default class Table extends React.Component {
     super(props)
 
     this.state = {
-      paginator: null,
-      page: this.props.page || 1,
-      pageSize:this.props.pageSize || 10,
-      selected: null,
-      setSelectedPage: () => {},
-      setTotalPages: () => {},
       records: []
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let patchState = {}
-    if (nextProps.page != prevState.page) {
-      patchState.page = nextProps.page
+
+    // do we have any new records?
+    if (nextProps.records.length === prevState.records.length) {
+      let i = 0
+      for (i = 0; i < nextProps.records.length; i++) {
+        if (nextProps.records[i].UUID != prevState.records[i].UUID) {
+          patchState.records = nextProps.records
+          break
+        }
+      }
+    } else {
+      patchState.records = nextProps.records
     }
+
     return patchState
-  }
-
-  updateDataSource() {
-    const params = {
-      page_size: this.state.pageSize,
-      page: this.state.page
-    }
-    this.props.dataSource(params).then(data => {
-      console.log({data})
-      this.setState({
-        records: data.records.map(this.props.dataMapper)
-      })
-      this.props.setSelectedPage(data.page)
-      this.props.setTotalPages(data.pages)
-    })
-  }
-
-  componentDidMount() {
-    this.updateDataSource()
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    let update = false
-    if (prevState.page != this.state.page) {
-      update = true
-    }
-    if (update) {
-      this.updateDataSource()
-    }
-  }
-
-  handleSelectRow(rowID) {
-    this.setState({selected: rowID})
-    this.props.onSelectRow(rowID)
-    return false
-  }
-
-  pushRequest(request) {
-    this.setState(state => {
-      const records = state.records.concat(request)
-      return {records}
-    })
   }
 
   timeTaken(nanosecs) {
@@ -86,21 +46,15 @@ export default class Table extends React.Component {
     return nanosecs + 'ns'
   }
 
-  handleRowClick(ev, id) {
-    console.log({ev})
-    console.log({id})
-  }
-
   shortUUID(uuid) {
     return uuid.substr(0, 8)
   }
 
-  drawRows() {
+  renderRows() {
     const { records } = this.state
 
     let rows = []
-    const limit = Math.min(records.length, this.props.pageSize)
-    for (let i = 0; i < limit; i++) {
+    for (let i = 0; i < records.length; i++) {
       let record = records[i]
       rows.push(
         <tr key={`row-${record.UUID}`} className='table-row'>
@@ -146,7 +100,7 @@ export default class Table extends React.Component {
           </tr>
         </thead>
         <tbody className='table-rows'>
-          {this.drawRows()}
+          {this.renderRows()}
         </tbody>
       </table>
     )
@@ -154,10 +108,5 @@ export default class Table extends React.Component {
 }
 
 Table.defaultProps = {
-  dataMapper: r => r,
-  dataSource: new Promise((resolve) => { resolve() }),
-  setSelectedPage: () => {},
-  setTotalPages: () => {},
-  page: 1,
-  pageSize: 10,
+  records: [],
 }

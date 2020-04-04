@@ -32,13 +32,8 @@ export default class Search extends React.Component {
             }}
             value={this.state.terms}
             type='text'
-            placeholder='Terms...'
+            placeholder='Search terms...'
           />
-        </div>
-        <div className='control'>
-          <a className='button is-info'>
-            Search
-          </a>
         </div>
       </div>
     )

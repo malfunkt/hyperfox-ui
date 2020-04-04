@@ -14,7 +14,6 @@ export default class Paginator extends React.Component {
   }
 
   handleClick(page) {
-    this.setState({selected: page})
     this.props.onSelectPage(page)
     return false
   }
@@ -31,7 +30,6 @@ export default class Paginator extends React.Component {
   }
 
   renderPageNumbers() {
-
     if (this.props.pages < 1) {
       return []
     }

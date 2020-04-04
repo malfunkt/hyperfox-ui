@@ -6,6 +6,11 @@ import Search from './search'
 
 import * as API from '../../lib/hyperfox'
 
+const STATUS_IDLE     = 0
+const STATUS_UPDATING = 1
+
+const TERM_LOOKUP_DELAY = 100
+
 export default class Inspector extends React.Component {
 
   constructor(props) {
@@ -13,10 +18,11 @@ export default class Inspector extends React.Component {
 
     this.state = {
       terms: '',
-
+      records: [],
       pageSize: 10,
       selectedPage: 1,
       totalPages: 1,
+      status: STATUS_IDLE
     }
   }
 
@@ -33,39 +39,97 @@ export default class Inspector extends React.Component {
     }
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let patchState = {}
+    if (nextProps.page != prevState.page) {
+      patchState.page = nextProps.page
+    }
+    return patchState
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.terms != this.state.terms) {
+      this.scheduledUpdateDataSource()
+      return
+    }
+
+    if (prevState.page != this.state.page) {
+      this.updateDataSource()
+    }
+  }
+
+  componentDidMount() {
+    this.updateDataSource()
+    API.Subscribe(data => {
+      this.updateDataSource()
+    })
+  }
+
+  scheduledUpdateDataSource() {
+    if (this._updateTimer) {
+      window.clearTimeout(this._updateTimer)
+    }
+
+    this._updateTimer = window.setTimeout(
+      () => {
+        this.updateDataSource()
+        this._updateTimer = 0
+      }, TERM_LOOKUP_DELAY
+    )
+  }
+
+  updateDataSource() {
+    const { terms, fromUUID, pageSize, selectedPage, status } = this.state
+
+    if (status !== STATUS_IDLE) {
+      console.log('-> IDLE')
+      return
+    }
+
+    const params = {
+      q: terms,
+      from: fromUUID,
+      page_size: pageSize,
+      page: selectedPage
+    }
+
+    this.setState({status: STATUS_UPDATING}, () => {
+      console.log('-> UPDATING')
+      API.Records(params).then(data => {
+        console.log('-> UPDATED')
+        this.setState({
+          records: data.records.map(this.tableRowMapper),
+          selectedPage: data.page,
+          totalPages: data.pages,
+          status: STATUS_IDLE
+        })
+      })
+    })
+
+  }
+
   render() {
     return (
       <div className="container is-widescreen">
         <Search
           onChange={value => {
             this.setState({terms: value})
+            this.scheduledUpdateDataSource()
           }}
           terms={this.state.terms}
         />
 
         <Table
-          page={this.state.selectedPage}
-          pageSize={this.state.pageSize}
-
-          setSelectedPage={selectedPage => {
-            this.setState({selectedPage})
-          }}
-          setTotalPages={totalPages => {
-            this.setState({totalPages})
-          }}
-
-          dataMapper={this.tableRowMapper}
-          dataSource={
-            (params) => {
-              return API.Records(params)
-            }
-          }
+          records={this.state.records}
         />
 
         <Paginator
           onSelectPage={(selectedPage) => {
-            this.setState({selectedPage})
+            this.setState({selectedPage}, () => {
+              this.updateDataSource()
+            })
           }}
+
           selected={this.state.selectedPage}
           pages={this.state.totalPages}
         />
