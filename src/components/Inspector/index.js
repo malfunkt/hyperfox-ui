@@ -36,7 +36,12 @@ export default class Inspector extends React.Component {
   render() {
     return (
       <div className="container is-widescreen">
-        <Search term={this.state.terms} />
+        <Search
+          onChange={value => {
+            this.setState({terms: value})
+          }}
+          terms={this.state.terms}
+        />
 
         <Table
           page={this.state.selectedPage}

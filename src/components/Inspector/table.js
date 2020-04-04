@@ -27,7 +27,6 @@ export default class Table extends React.Component {
     if (nextProps.page != prevState.page) {
       patchState.page = nextProps.page
     }
-    console.log({patchState})
     return patchState
   }
 

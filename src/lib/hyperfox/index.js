@@ -1,5 +1,5 @@
-const DEFAULT_API_PREFIX='http://127.0.0.1:8899'
-const DEFAULT_WS_PREFIX='ws://127.0.0.1:8899/live'
+const DEFAULT_API_PREFIX='http://' + window.location.hostname + ':8899'
+const DEFAULT_WS_PREFIX='ws://' + window.location.hostname + ':8899/live'
 
 let W3CWebSocket = require('websocket').w3cwebsocket
 let qs = require('qs')

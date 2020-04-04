@@ -9,11 +9,31 @@ export default class Search extends React.Component {
     }
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let patchState = {}
+    if (nextProps.terms != prevState.terms) {
+      patchState.terms = nextProps.terms
+    }
+    return patchState
+  }
+
+  updateValue(value) {
+    this.props.onChange(value)
+  }
+
   render() {
     return (
       <div className='field has-addons'>
         <div className='control'>
-          <input className='input' value={this.state.terms} type='text' placeholder='Terms...' />
+          <input
+            className='input'
+            onChange={(ev) => {
+              this.updateValue(ev.target.value)
+            }}
+            value={this.state.terms}
+            type='text'
+            placeholder='Terms...'
+          />
         </div>
         <div className='control'>
           <a className='button is-info'>
@@ -26,5 +46,6 @@ export default class Search extends React.Component {
 }
 
 Search.defaultProps = {
-  terms: ''
+  terms: '',
+  onChange: () => {}
 }
