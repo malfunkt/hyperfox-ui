@@ -3,21 +3,29 @@ import React from 'react';
 function Footer() {
   return (
     <footer className='footer'>
-      <div className='content has-text-centered'>
-        <p>
-          <strong>Hyperfox</strong> by <a href='https://xiam.io' title='José Nieto'>José Nieto</a>.
-        </p>
-        <p>
-          <strong>Bulma</strong> by <a href='https://jgthms.com' title='Jeremy Thomas'>Jeremy Thomas</a>.
-        </p>
-        <p>
-          <strong>Fox icon</strong> by <a href='https://www.flaticon.com/authors/smashicons' title='Smashicons'>Smashicons </a>
-          from <a href='https://www.flaticon.com/' title='Flaticon'> www.flaticon.com</a>
-        </p>
-        <p>
-          <iframe src='https://ghbtns.com/github-btn.html?user=malfunkt&repo=hyperfox&type=star&count=true' frameborder='0' scrolling='0' width='170px' height='20px'></iframe>
-          <iframe src='https://ghbtns.com/github-btn.html?user=xiam&type=follow&count=true' frameborder='0' scrolling='0' width='170px' height='20px'></iframe>
-        </p>
+      <div className='container is-widescreen'>
+        <div className='columns'>
+          <div className='column'>
+            <div>
+              <strong>Hyperfox</strong> by <a href='https://xiam.io' title='José Nieto'>José Nieto</a>
+            </div>
+            <div>
+              <strong>Bulma</strong> by <a href='https://jgthms.com' title='Jeremy Thomas'>Jeremy Thomas</a>
+            </div>
+            <div>
+              <strong>Fox icon</strong> by <a href='https://www.flaticon.com/authors/smashicons' title='Smashicons'>Smashicons </a>
+              from <a href='https://www.flaticon.com/' title='Flaticon'> www.flaticon.com</a>
+            </div>
+          </div>
+          <div className='column'>
+            <div>
+              <iframe src='https://ghbtns.com/github-btn.html?user=xiam&type=follow&count=true' frameborder='0' scrolling='0' width='170px' height='20px'></iframe>
+            </div>
+            <div>
+              <iframe src='https://ghbtns.com/github-btn.html?user=malfunkt&repo=hyperfox&type=star&count=true' frameborder='0' scrolling='0' width='170px' height='20px'></iframe>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   )

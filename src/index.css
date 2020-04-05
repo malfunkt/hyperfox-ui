@@ -28,6 +28,10 @@ dl dt {
 dl dt::after {
   content: ':\00a0';
 }
-footer iframe {
-  border: 1px solid red;
+footer.footer iframe {
+  height: 20px;
+}
+footer.footer {
+  font-size: small;
+  padding: 2rem 1rem 2rem;
 }
