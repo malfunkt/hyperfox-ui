@@ -90,15 +90,17 @@ export default class Table extends React.Component {
           <td style={{...this.rangeWidth(40, 120), ...{'textAlign': 'right'}}} title={timeAgo}>
             <tt>{timeAgo}</tt>
           </td>
-          <td style={this.rangeWidth(40, 60)}>
-            <span className='icon'>
-              <a href={`/records/${record.UUID}`}>
-                <i className='oi' data-glyph='eye'></i>
-              </a>
-              <a href={API.RecordResponseURL(record.UUID)}>
-                <i className='oi' data-glyph='data-transfer-download'></i>
-              </a>
-            </span>
+          <td style={this.rangeWidth(40, 120)}>
+            <a href={`/records/${record.UUID}`}>
+              <span className='icon has-text-info'>
+                <i className='fas fa-info-circle'></i>
+              </span>
+            </a>
+            <a href={API.RecordResponseURL(record.UUID)}>
+              <span className='icon has-text-success'>
+                <i className='fas fa-download'></i>
+              </span>
+            </a>
           </td>
         </tr>
       )
@@ -109,7 +111,7 @@ export default class Table extends React.Component {
 
   render() {
     return (
-      <div className="table-container">
+      <div className='table-container'>
         <table className='table is-fullwidth is-scrollable is-hoverable'>
           <thead>
             <tr>

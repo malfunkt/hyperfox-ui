@@ -92,7 +92,13 @@ export default class Paginator extends React.Component {
           onClick={
             () => this.handleClick(this.state.selected - 1)
           }
-          disabled={!showPrevious}>Previous</button>
+          disabled={!showPrevious}
+        >
+          <span className='icon'>
+            <i className='fas fa-caret-left'></i>
+          </span>
+          Previous
+        </button>
 
         <button
           type='button'
@@ -100,8 +106,13 @@ export default class Paginator extends React.Component {
           onClick={
             () => this.handleClick(this.state.selected + 1)
           }
-          disabled={!showNext}>Next page</button>
-
+          disabled={!showNext}
+        >
+          Next page
+          <span className='icon'>
+            <i className='fas fa-caret-right'></i>
+          </span>
+        </button>
         <ul className='pagination-list'>
           {this.renderPageNumbers()}
         </ul>

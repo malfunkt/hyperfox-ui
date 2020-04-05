@@ -23,8 +23,8 @@ export default class Search extends React.Component {
 
   render() {
     return (
-      <div className='field has-addons'>
-        <div className='control'>
+      <div className='field'>
+        <p className='control has-icons-left'>
           <input
             className='input'
             onFocus={(ev) => {
@@ -37,7 +37,10 @@ export default class Search extends React.Component {
             type='text'
             placeholder='Search terms...'
           />
-        </div>
+          <span className='icon is-left'>
+            <i className='fas fa-filter'></i>
+          </span>
+        </p>
       </div>
     )
   }
