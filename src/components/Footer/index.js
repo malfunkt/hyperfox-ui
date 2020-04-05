@@ -14,6 +14,10 @@ function Footer() {
           <strong>Fox icon</strong> by <a href='https://www.flaticon.com/authors/smashicons' title='Smashicons'>Smashicons </a>
           from <a href='https://www.flaticon.com/' title='Flaticon'> www.flaticon.com</a>
         </p>
+        <p>
+          <iframe src='https://ghbtns.com/github-btn.html?user=malfunkt&repo=hyperfox&type=star&count=true' frameborder='0' scrolling='0' width='170px' height='20px'></iframe>
+          <iframe src='https://ghbtns.com/github-btn.html?user=xiam&type=follow&count=true' frameborder='0' scrolling='0' width='170px' height='20px'></iframe>
+        </p>
       </div>
     </footer>
   )

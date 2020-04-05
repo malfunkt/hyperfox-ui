@@ -6,8 +6,9 @@ import Search from './search'
 
 import * as API from '../../lib/hyperfox'
 
-const STATUS_IDLE     = 0
-const STATUS_UPDATING = 1
+const STATUS_DISCONNECTED = 0
+const STATUS_IDLE         = 1
+const STATUS_UPDATING     = 2
 
 const TERM_LOOKUP_DELAY = 100
 
@@ -110,13 +111,6 @@ export default class Inspector extends React.Component {
   renderRecords() {
     return (
       <div>
-        <Search
-          onChange={value => {
-            this.setState({terms: value})
-            this.scheduledUpdateDataSource()
-          }}
-          terms={this.state.terms}
-        />
 
         <Table
           records={this.state.records}
@@ -137,21 +131,32 @@ export default class Inspector extends React.Component {
   }
 
   render() {
-    const {records} = this.state
+    const {records, terms} = this.state
 
     return (
-      <div className="container is-widescreen">
-        <div className="notification is-warning">
-          Lost connection.
-        </div>
+      <section className='section'>
+        <div className='container is-widescreen'>
 
-        {records.length > 0 ? this.renderRecords() : (
-          <div className="notification is-info">
-            No records were found.
+          <div className='notification is-warning'>
+            Lost connection.
           </div>
-        )}
 
-      </div>
+          <Search
+            onChange={value => {
+              this.setState({terms: value})
+              this.scheduledUpdateDataSource()
+            }}
+            terms={terms}
+          />
+
+          {records.length > 0 ? this.renderRecords() : (
+            <div className='notification is-info'>
+              No records were found.
+            </div>
+          )}
+
+        </div>
+      </section>
     )
   }
 }

@@ -1,7 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
+
 import * as API from '../../lib/hyperfox'
-import * as moment from 'moment'
+import * as utils from '../../lib/utils'
 
 export default class Table extends React.Component {
 
@@ -32,20 +33,6 @@ export default class Table extends React.Component {
     return patchState
   }
 
-  timeTaken(nanosecs) {
-    switch (true) {
-      case nanosecs > 1e9:
-        return Math.ceil(nanosecs/1e9) + 's'
-
-      case nanosecs > 1e6:
-        return Math.ceil(nanosecs/1e6) + 'ms'
-
-      case nanosecs > 1e3:
-        return Math.ceil(nanosecs/1e3) + 'µs'
-    }
-    return nanosecs + 'ns'
-  }
-
   rangeWidth(minWidth, maxWidth) {
     return {
       'minWidth': `${minWidth}px`,
@@ -62,11 +49,14 @@ export default class Table extends React.Component {
     let rows = []
     for (let i = 0; i < records.length; i++) {
       let record = records[i]
-      let timeTaken = this.timeTaken(record.timeTaken)
-      let timeAgo = moment(record.time).fromNow()
+
+      let timeTaken = utils.timeTaken(record.timeTaken)
+      let timeAgo = utils.timeAgo(record.time)
+      let size = utils.size(record.size)
+
       rows.push(
         <tr key={`row-${record.UUID}`} className='table-row'>
-          <td style={this.rangeWidth(10, 60)}>
+          <td style={this.rangeWidth(10, 80)}>
             <tt>{record.UUID}</tt>
           </td>
           <td style={this.rangeWidth(10, 60)}>
@@ -82,7 +72,7 @@ export default class Table extends React.Component {
             <tt>{record.status}</tt>
           </td>
           <td style={{...this.rangeWidth(20, 60), ...{'textAlign': 'right'}}}>
-            <tt>{record.size}</tt>
+            <tt>{size}</tt>
           </td>
           <td style={{...this.rangeWidth(40, 80), ...{'textAlign': 'right'}}} title={timeTaken}>
             <tt>{timeTaken}</tt>
@@ -91,16 +81,18 @@ export default class Table extends React.Component {
             <tt>{timeAgo}</tt>
           </td>
           <td style={this.rangeWidth(40, 120)}>
-            <a href={`/records/${record.UUID}`}>
-              <span className='icon has-text-info'>
-                <i className='fas fa-info-circle'></i>
-              </span>
-            </a>
-            <a href={API.RecordResponseURL(record.UUID)}>
-              <span className='icon has-text-success'>
-                <i className='fas fa-download'></i>
-              </span>
-            </a>
+            <p className='buttons'>
+              <a href={`/records/${record.UUID}`} className='button'>
+                <span className='icon has-text-info is-medium'>
+                  <i className='fas fa-info-circle fa-lg'></i>
+                </span>
+              </a>
+              <a href={API.RecordResponseURL(record.UUID)} className='button'>
+                <span className='icon has-text-success is-medium'>
+                  <i className='fas fa-download fa-lg'></i>
+                </span>
+              </a>
+            </p>
           </td>
         </tr>
       )

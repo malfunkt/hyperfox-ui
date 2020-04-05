@@ -1,6 +1,14 @@
 import React from 'react';
 
 import * as API from '../../lib/hyperfox'
+import * as utils from '../../lib/utils'
+
+const iframeStyle = {
+  border: '1px solid #dbdbdb',
+  borderRadius: '4px',
+  width: '100%',
+  height: '8em'
+}
 
 export default class Viewer extends React.Component {
 
@@ -32,14 +40,12 @@ export default class Viewer extends React.Component {
         {
           names.map((name) => {
             return header[name].map(value => {
-              return [<dt>{name}</dt>, <dd>{value}</dd>]
+              return [<dt title={name}>{name}</dt>, <dd><input className='input' readonly='readonly' onClick={(ev) => {ev.target.select()}} value={value} /></dd>]
             })
           })
         }
       </dl>
     )
-
-    console.log({names})
 
     return <span />
   }
@@ -47,66 +53,104 @@ export default class Viewer extends React.Component {
   renderMedia() {
     return (
       <div className='card-image'>
-        <figure className="image is-4by3">
-          <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image" />
+        <figure className='image is-4by3'>
+          <img src='https://bulma.io/images/placeholders/1280x960.png' alt='Placeholder image' />
         </figure>
       </div>
+    )
+  }
+
+  renderButtonRaw(url) {
+    return (
+      <a href={url}
+        className='button'
+      >
+        <span className='icon'>
+          <i className='fas fa-angle-double-down'></i>
+        </span>
+        <span>Raw</span>
+      </a>
+    )
+  }
+
+  renderButtonDownload(url) {
+    return (
+      <a href={url}
+        className='button'
+      >
+        <span className='icon'>
+          <i className='fas fa-download'></i>
+        </span>
+        <span>Download body</span>
+      </a>
     )
   }
 
   renderRecord(record) {
     console.log({record})
     return (
-      <div>
-        <div className="card-content">
-
-          <p className="title">
-            <span>{record.method}</span>
-            <span>{record.url}</span>
-          </p>
-
-          <p className="subtitle">
-            {record.content_type}
-          </p>
-
-
-          <div className="content">
-
-            <div className="columns">
-              <div className="column">
-                <dl>
-                  <dt>UUID:</dt> <dd>{record.uuid}</dd>
-                  <dt>Method:</dt> <dd>{record.method}</dd>
-                  <dt>URL:</dt> <dd>{record.url}</dd>
-                  <dt>Time Taken:</dt> <dd>{record.time_taken}</dd>
-                </dl>
+      <section className='section'>
+        <div className='container is-widescreen'>
+          <div className='content'>
+            <div className='card'>
+              <header className='card-header'>
+                <p className='card-header-title'>
+                  <tt>
+                    {record.method}
+                    &nbsp;
+                    {record.url}
+                  </tt>
+                </p>
+              </header>
+              <div className='card-content'>
+                <div className='columns'>
+                  <div className='column'>
+                    <dl>
+                      <dt>UUID</dt> <dd>{record.uuid}</dd>
+                      <dt>Content type</dt> <dd>{record.content_type}</dd>
+                      <dt>Date</dt> <dd>{utils.timeAgo(record.date_end)}</dd>
+                      <dt>Time taken</dt> <dd>{utils.timeTaken(record.time_taken)}</dd>
+                      <dt>Size</dt> <dd>{utils.size(record.content_length)}</dd>
+                    </dl>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div>
-              Request
-              {this.renderHeaders(record.request_header)}
-              <iframe src={API.RecordRequestEmbedURL(record.uuid)}></iframe>
-              <a href={API.RecordRequestURL(record.uuid)}
-                className="button">Raw</a>
-              <a href={API.RecordRequestURL(record.uuid)}
-                className="button">Download body</a>
+            <div className='card'>
+              <header className='card-header'>
+                <p className='card-header-title'>
+                  Client request
+                </p>
+              </header>
+              <div className='card-content'>
+                {this.renderHeaders(record.request_header)}
+                <iframe style={iframeStyle} src={API.RecordRequestEmbedURL(record.uuid)}></iframe>
+                <p className='buttons'>
+                  {this.renderButtonRaw(API.RecordRequestWireURL(record.uuid))}
+                  {this.renderButtonDownload(API.RecordRequestURL(record.uuid))}
+                </p>
+              </div>
             </div>
 
-            <div>
-              Response
-              {this.renderHeaders(record.header)}
-              <iframe src={API.RecordResponseEmbedURL(record.uuid)}></iframe>
-              <a href={API.RecordResponseURL(record.uuid)}
-                className="button">Raw</a>
-              <a href={API.RecordResponseURL(record.uuid)}
-                className="button">Download body</a>
+            <div className='card'>
+              <header className='card-header'>
+                <p className='card-header-title'>
+                  Server response
+                </p>
+              </header>
+              <div className='card-content'>
+                {this.renderHeaders(record.header)}
+                <iframe style={iframeStyle} src={API.RecordResponseEmbedURL(record.uuid)}></iframe>
+                <p className='buttons'>
+                  {this.renderButtonRaw(API.RecordResponseWireURL(record.uuid))}
+                  {this.renderButtonDownload(API.RecordResponseURL(record.uuid))}
+                </p>
+              </div>
             </div>
-
-            <time datetime="2016-1-1">{record.date_end}</time>
           </div>
         </div>
-      </div>
+      </section>
     )
   }
 
