@@ -19,10 +19,10 @@ function Footer() {
           </div>
           <div className='column'>
             <div>
-              <iframe src='https://ghbtns.com/github-btn.html?user=xiam&type=follow&count=true' frameborder='0' scrolling='0' width='170px' height='20px'></iframe>
+              <iframe src='https://ghbtns.com/github-btn.html?user=xiam&type=follow&count=true' frameBorder='0' scrolling='0' width='170px' height='20px' title='follow @xiam'></iframe>
             </div>
             <div>
-              <iframe src='https://ghbtns.com/github-btn.html?user=malfunkt&repo=hyperfox&type=star&count=true' frameborder='0' scrolling='0' width='170px' height='20px'></iframe>
+              <iframe src='https://ghbtns.com/github-btn.html?user=malfunkt&repo=hyperfox&type=star&count=true' frameBorder='0' scrolling='0' width='170px' height='20px' title='star hyperfox'></iframe>
             </div>
           </div>
         </div>

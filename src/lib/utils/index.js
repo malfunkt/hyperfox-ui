@@ -3,16 +3,18 @@ const moment = require('moment')
 module.exports = {
   timeTaken: (nanosecs) => {
     switch (true) {
-      case nanosecs > 1e9:
-        return Math.ceil(nanosecs/1e9) + 's'
+      case nanosecs < 1e3:
+        return `${nanosecs}ns`
 
-      case nanosecs > 1e6:
-        return Math.ceil(nanosecs/1e6) + 'ms'
+      case nanosecs < 1e6:
+        return `${Math.ceil(nanosecs/1e3)}µs`
 
-      case nanosecs > 1e3:
-        return Math.ceil(nanosecs/1e3) + 'µs'
+      case nanosecs < 1e9:
+        return `${Math.ceil(nanosecs/1e6)}ms`
+
+      default:
+        return `${Math.ceil(nanosecs/1e9)}s`
     }
-    return nanosecs + 'ns'
   },
 
   timeAgo: (time) => {
@@ -21,18 +23,17 @@ module.exports = {
 
   size: (bytes) => {
     switch (true) {
-      case bytes > 1e12:
-        return Math.ceil(bytes/1e12) + 'Tb'
+      case bytes < 1e3:
+        return `${bytes}b`
 
-      case bytes > 1e9:
-        return Math.ceil(bytes/1e9) + 'Gb'
+      case bytes < 1e6:
+        return `${Math.ceil(bytes/1e3)}Kb`
 
-      case bytes > 1e6:
-        return Math.ceil(bytes/1e6) + 'Mb'
+      case bytes < 1e9:
+        return `${Math.ceil(bytes/1e6)}Mb`
 
-      case bytes > 1e3:
-        return Math.ceil(bytes/1e3) + 'Kb'
+      default:
+        return `${Math.ceil(bytes/1e9)}Gb`
     }
-    return bytes + 'b'
   }
 }

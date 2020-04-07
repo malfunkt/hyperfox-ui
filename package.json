@@ -6,12 +6,12 @@
     "bulma": "^0.7.5",
     "classnames": "^2.2.6",
     "moment": "^2.24.0",
-    "qs": "^6.9.2",
+    "qs": "^6.9.3",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
-    "websocket": "^1.0.30"
+    "websocket": "^1.0.31"
   },
   "scripts": {
     "start": "react-scripts start",

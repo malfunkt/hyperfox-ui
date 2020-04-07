@@ -1,3 +1,5 @@
+.PHONY: build
+
 setup: clean
 	npm install
 
@@ -6,3 +8,6 @@ clean:
 
 start:
 	npm start
+
+build:
+	npm run build

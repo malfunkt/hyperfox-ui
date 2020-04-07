@@ -1,42 +1,100 @@
-const DEFAULT_API_PREFIX='http://' + window.location.hostname + ':8899'
-const DEFAULT_WS_PREFIX='ws://' + window.location.hostname + ':8899/live'
+const HOSTNAME = window.location.hostname
 
-let W3CWebSocket = require('websocket').w3cwebsocket
-let qs = require('qs')
+const DEFAULT_API_PREFIX=`http://${HOSTNAME}:8899`
+const DEFAULT_WS_PREFIX=`ws://${HOSTNAME}:8899/live`
+
+const W3CWebSocket = require('websocket').w3cwebsocket
+const qs = require('qs')
+
+const STATUS_DISCONNECTED   = 0
+const STATUS_CONNECTING     = 1
+const STATUS_CONNECTED      = 2
+
+const MESSAGE_TYPE_STATUS   = 0
+const MESSAGE_TYPE_ERROR    = 1
+const MESSAGE_TYPE_DATA     = 2
 
 class Hyperfox {
+
+  get STATUS_DISCONNECTED() {
+    return STATUS_DISCONNECTED
+  }
+
+  get STATUS_CONNECTING() {
+    return STATUS_CONNECTING
+  }
+
+  get STATUS_CONNECTED() {
+    return STATUS_CONNECTED
+  }
+
+  get MESSAGE_TYPE_STATUS() {
+    return MESSAGE_TYPE_STATUS
+  }
+
+  get MESSAGE_TYPE_ERROR() {
+    return MESSAGE_TYPE_ERROR
+  }
+
+  get MESSAGE_TYPE_DATA() {
+    return MESSAGE_TYPE_DATA
+  }
+
   constructor(props) {
     this.prefix = DEFAULT_API_PREFIX
+    this.status = STATUS_DISCONNECTED
 
     this._wsOnmessage = () => {}
+  }
+
+  Connect() {
     this._openWebsocket()
   }
 
   _openWebsocket() {
     let ws = new W3CWebSocket(DEFAULT_WS_PREFIX);
 
+    this._wsOnmessage({
+      type: MESSAGE_TYPE_STATUS,
+      data: STATUS_CONNECTING
+    })
+
     ws.onopen = (e) => {
-      console.log('GOT SOCKET')
-      if (e.data) {
-        console.log('OPEN WS', JSON.parse(e.data))
-      }
+      this._wsOnmessage({
+        type: MESSAGE_TYPE_STATUS,
+        data: STATUS_CONNECTED
+      })
     }
 
     ws.onmessage = (e) => {
-      console.log({e})
       let data = JSON.parse(e.data)
       if (data) {
-        this._wsOnmessage(data)
+        this._wsOnmessage({
+          type: MESSAGE_TYPE_DATA,
+          data: data
+        })
       }
     }
 
     ws.onerror = (e) => {
-      console.log({e})
+      this._wsOnmessage({
+        type: MESSAGE_TYPE_ERROR,
+        data: e
+      })
     }
 
     ws.onclose = (e) => {
-      console.log({e})
-      console.log("connection closed (" + e.code + ")");
+      this._wsOnmessage({
+        type: MESSAGE_TYPE_STATUS,
+        data: STATUS_DISCONNECTED
+      })
+
+      window.setTimeout(
+        () => {
+          this._openWebsocket()
+        },
+        1000
+      )
     }
   }
 
@@ -83,4 +141,4 @@ class Hyperfox {
   }
 }
 
-module.exports = new Hyperfox()
+export default new Hyperfox()

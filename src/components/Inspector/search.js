@@ -11,7 +11,7 @@ export default class Search extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let patchState = {}
-    if (nextProps.terms != prevState.terms) {
+    if (nextProps.terms !== prevState.terms) {
       patchState.terms = nextProps.terms
     }
     return patchState

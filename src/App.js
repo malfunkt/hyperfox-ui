@@ -9,8 +9,7 @@ import Viewer from './components/Viewer'
 import {
 	BrowserRouter as Router,
 	Switch,
-	Route,
-	Link
+	Route
 } from 'react-router-dom'
 
 import 'bulma/css/bulma.css'
@@ -22,9 +21,7 @@ function App() {
       <Router>
         <Switch>
           <Route path="/records/:uuid" component={Viewer} />
-          <Route path="/">
-            <Inspector />
-          </Route>
+          <Route path="/" component={Inspector} />
         </Switch>
         <Footer />
       </Router>

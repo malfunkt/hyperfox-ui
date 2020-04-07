@@ -20,10 +20,10 @@ export default class Paginator extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let patchState = {}
-    if (nextProps.pages != prevState.pages) {
+    if (nextProps.pages !== prevState.pages) {
       patchState.pages = nextProps.pages
     }
-    if (nextProps.selected != prevState.selected) {
+    if (nextProps.selected !== prevState.selected) {
       patchState.selected = nextProps.selected
     }
     return patchState

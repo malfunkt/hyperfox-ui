@@ -1,7 +1,6 @@
 import React from 'react'
-import classNames from 'classnames'
 
-import * as API from '../../lib/hyperfox'
+import API from '../../lib/hyperfox'
 import * as utils from '../../lib/utils'
 
 export default class Table extends React.Component {
@@ -21,7 +20,7 @@ export default class Table extends React.Component {
     if (nextProps.records.length === prevState.records.length) {
       let i = 0
       for (i = 0; i < nextProps.records.length; i++) {
-        if (nextProps.records[i].UUID != prevState.records[i].UUID) {
+        if (nextProps.records[i].UUID !== prevState.records[i].UUID) {
           patchState.records = nextProps.records
           break
         }

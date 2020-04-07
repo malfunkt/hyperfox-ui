@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-import * as API from '../../lib/hyperfox'
+import API from '../../lib/hyperfox'
 import * as utils from '../../lib/utils'
 
 const iframeStyle = {
@@ -46,18 +46,6 @@ export default class Viewer extends React.Component {
         }
       </dl>
     )
-
-    return <span />
-  }
-
-  renderMedia() {
-    return (
-      <div className='card-image'>
-        <figure className='image is-4by3'>
-          <img src='https://bulma.io/images/placeholders/1280x960.png' alt='Placeholder image' />
-        </figure>
-      </div>
-    )
   }
 
   renderButtonRaw(url) {
@@ -87,7 +75,6 @@ export default class Viewer extends React.Component {
   }
 
   renderRecord(record) {
-    console.log({record})
     return (
       <section className='section'>
         <div className='container is-widescreen'>
@@ -125,7 +112,7 @@ export default class Viewer extends React.Component {
               </header>
               <div className='card-content'>
                 {this.renderHeaders(record.request_header)}
-                <iframe style={iframeStyle} src={API.RecordRequestEmbedURL(record.uuid)}></iframe>
+                <iframe title='request body' style={iframeStyle} src={API.RecordRequestEmbedURL(record.uuid)}></iframe>
                 <p className='buttons'>
                   {this.renderButtonRaw(API.RecordRequestWireURL(record.uuid))}
                   {this.renderButtonDownload(API.RecordRequestURL(record.uuid))}
@@ -141,7 +128,7 @@ export default class Viewer extends React.Component {
               </header>
               <div className='card-content'>
                 {this.renderHeaders(record.header)}
-                <iframe style={iframeStyle} src={API.RecordResponseEmbedURL(record.uuid)}></iframe>
+                <iframe title='response body' style={iframeStyle} src={API.RecordResponseEmbedURL(record.uuid)}></iframe>
                 <p className='buttons'>
                   {this.renderButtonRaw(API.RecordResponseWireURL(record.uuid))}
                   {this.renderButtonDownload(API.RecordResponseURL(record.uuid))}

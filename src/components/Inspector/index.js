@@ -1,29 +1,31 @@
-import React from 'react';
+import React from 'react'
 
 import Paginator from './paginator'
 import Table from './table'
 import Search from './search'
-
-import * as API from '../../lib/hyperfox'
-
-const STATUS_DISCONNECTED = 0
-const STATUS_IDLE         = 1
-const STATUS_UPDATING     = 2
+import * as qs from 'qs'
+import API from '../../lib/hyperfox'
 
 const TERM_LOOKUP_DELAY = 100
+
+const QUERY_STATUS_IDLE     = 0
+const QUERY_STATUS_QUERYING = 1
 
 export default class Inspector extends React.Component {
 
   constructor(props) {
     super(props)
 
+    const queryParams = qs.parse(props.location.search, {ignoreQueryPrefix: true});
+
     this.state = {
-      terms: '',
+      terms: queryParams.q || '',
       records: [],
       pageSize: 10,
-      selectedPage: 1,
+      selectedPage: queryParams.page || 0,
       totalPages: 1,
-      status: STATUS_IDLE
+      queryStatus: QUERY_STATUS_IDLE,
+      status: API.STATUS_DISCONNECTED
     }
   }
 
@@ -42,28 +44,45 @@ export default class Inspector extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let patchState = {}
-    if (nextProps.page != prevState.page) {
+    if (nextProps.page !== prevState.page) {
       patchState.page = nextProps.page
     }
     return patchState
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.terms != this.state.terms) {
+    if (prevState.terms !== this.state.terms) {
       this.scheduledUpdateDataSource()
       return
     }
 
-    if (prevState.page != this.state.page) {
+    if (prevState.page !== this.state.page) {
       this.updateDataSource()
     }
   }
 
+  messageReader(message) {
+    switch (message.type) {
+      case API.MESSAGE_TYPE_STATUS:
+        this.setState({status: message.data})
+        if (message.data === API.STATUS_CONNECTED) {
+          this.updateDataSource()
+        }
+      break
+      case API.MESSAGE_TYPE_DATA:
+        this.updateDataSource()
+      break
+      default:
+        console.log(`unknown message type "${message.type}"`)
+      break
+    }
+  }
+
   componentDidMount() {
-    this.updateDataSource()
     API.Subscribe(data => {
-      this.updateDataSource()
+      this.messageReader(data)
     })
+    API.Connect()
   }
 
   scheduledUpdateDataSource() {
@@ -80,10 +99,15 @@ export default class Inspector extends React.Component {
   }
 
   updateDataSource() {
-    const { terms, fromUUID, pageSize, selectedPage, status } = this.state
+    const {
+      terms,
+      fromUUID,
+      pageSize,
+      selectedPage,
+      queryStatus
+    } = this.state
 
-    if (status !== STATUS_IDLE) {
-      console.log('-> IDLE')
+    if (queryStatus !== QUERY_STATUS_IDLE) {
       return
     }
 
@@ -94,15 +118,19 @@ export default class Inspector extends React.Component {
       page: selectedPage
     }
 
-    this.setState({status: STATUS_UPDATING}, () => {
-      console.log('-> UPDATING')
+    const queryParams = qs.stringify({
+      q: terms,
+      page: selectedPage
+    })
+    this.props.history.push(`/?${queryParams}`)
+
+    this.setState({queryStatus: QUERY_STATUS_QUERYING}, () => {
       API.Records(params).then(data => {
-        console.log('-> UPDATED')
         this.setState({
           records: data.records.map(this.tableRowMapper),
           selectedPage: data.page,
           totalPages: data.pages,
-          status: STATUS_IDLE
+          queryStatus: QUERY_STATUS_IDLE
         })
       })
     })
@@ -131,32 +159,48 @@ export default class Inspector extends React.Component {
   }
 
   render() {
-    const {records, terms} = this.state
+    const {records, terms, status, queryStatus} = this.state
+
+    let body
+    switch (status) {
+      case API.STATUS_CONNECTED:
+        const showRecords = records.length > 0 || queryStatus === QUERY_STATUS_QUERYING
+        const noRecordsFound = (
+          <div className='notification is-info'>
+            No records were found.
+          </div>
+        )
+
+        body = (
+          <div>
+            <Search
+              onChange={value => {
+                this.setState({terms: value})
+                this.scheduledUpdateDataSource()
+              }}
+              terms={terms}
+            />
+            {showRecords ? this.renderRecords() : noRecordsFound}
+          </div>
+        )
+      break
+      default:
+        body = (
+          <progress className='progress' max={100}>10%</progress>
+        )
+      break
+    }
 
     return (
       <section className='section'>
         <div className='container is-widescreen'>
-
-          <div className='notification is-warning'>
-            Lost connection.
-          </div>
-
-          <Search
-            onChange={value => {
-              this.setState({terms: value})
-              this.scheduledUpdateDataSource()
-            }}
-            terms={terms}
-          />
-
-          {records.length > 0 ? this.renderRecords() : (
-            <div className='notification is-info'>
-              No records were found.
-            </div>
-          )}
-
+          {body}
         </div>
       </section>
     )
   }
+}
+
+Inspector.defaultProps = {
+  selectedPage: 0
 }
