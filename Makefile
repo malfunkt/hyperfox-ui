@@ -9,5 +9,8 @@ clean:
 start:
 	npm start
 
-build:
+build: test
 	npm run build
+
+test:
+	CI=true npm run test

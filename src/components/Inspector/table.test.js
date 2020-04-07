@@ -43,7 +43,7 @@ describe('Table', () => {
   })
 
   test('it displays one element', () => {
-    const component = create(<Table requests={[{ID: 1}]} />)
+    const component = create(<Table records={[{UUID: 1}]} />)
     const instance = component.root
 
     const tableRows = findTableRows(instance)
@@ -51,33 +51,17 @@ describe('Table', () => {
     expect(tableRows.length).toEqual(1)
   })
 
-  test('it displays ten elements', () => {
+  test('it displays 30 elements', () => {
     let elements = []
     for (let i = 0; i < 30; i++) {
-      elements.push({ID: i + 1})
+      elements.push({UUID: i + 1})
     }
 
-    const component = create(<Table requests={elements} />)
+    const component = create(<Table records={elements} />)
     const instance = component.root
 
     const tableRows = findTableRows(instance)
 
-    expect(tableRows.length).toEqual(10)
+    expect(tableRows.length).toEqual(30)
   })
-
-  test('it displays twenty elements', () => {
-    let elements = []
-    for (let i = 0; i < 30; i++) {
-      elements.push({ID: i + 1})
-    }
-
-    const component = create(<Table pageSize={20} requests={elements} />)
-    const instance = component.root
-
-    const tableRows = findTableRows(instance)
-
-    expect(tableRows.length).toEqual(20)
-  })
-
-
 })

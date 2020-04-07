@@ -24,7 +24,7 @@ export default class Paginator extends React.Component {
       patchState.pages = nextProps.pages
     }
     if (nextProps.selected !== prevState.selected) {
-      patchState.selected = nextProps.selected
+      patchState.selected = Math.max(1, Math.min(nextProps.selected, nextProps.pages))
     }
     return patchState
   }
