@@ -27,6 +27,10 @@ export default class Inspector extends React.Component {
       queryStatus: QUERY_STATUS_IDLE,
       status: API.STATUS_DISCONNECTED
     }
+
+    if (queryParams.auth) {
+      API.SetAuthToken(queryParams.auth)
+    }
   }
 
   tableRowMapper(r) {
@@ -68,6 +72,9 @@ export default class Inspector extends React.Component {
         if (message.data === API.STATUS_CONNECTED) {
           this.updateDataSource()
         }
+      break
+      case API.MESSAGE_TYPE_ERROR:
+        console.log(message.data)
       break
       case API.MESSAGE_TYPE_DATA:
         this.updateDataSource()
@@ -118,11 +125,14 @@ export default class Inspector extends React.Component {
       page: selectedPage
     }
 
-    const queryParams = qs.stringify({
-      q: terms,
-      page: selectedPage
-    })
-    this.props.history.push(`/?${queryParams}`)
+    let queryParams = {}
+    if (terms !== '') {
+      queryParams.q = terms
+    }
+    if (selectedPage > 0) {
+      queryParams.page = selectedPage
+    }
+    this.props.history.push(`/?${qs.stringify(queryParams)}`)
 
     this.setState({queryStatus: QUERY_STATUS_QUERYING}, () => {
       API.Records(params).then(data => {

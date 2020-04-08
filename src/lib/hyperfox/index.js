@@ -14,6 +14,8 @@ const MESSAGE_TYPE_STATUS   = 0
 const MESSAGE_TYPE_ERROR    = 1
 const MESSAGE_TYPE_DATA     = 2
 
+const AUTH_KEY = 'auth'
+
 class Hyperfox {
 
   get STATUS_DISCONNECTED() {
@@ -47,12 +49,8 @@ class Hyperfox {
     this._wsOnmessage = () => {}
   }
 
-  Connect() {
-    this._openWebsocket()
-  }
-
   _openWebsocket() {
-    let ws = new W3CWebSocket(DEFAULT_WS_PREFIX);
+    let ws = new W3CWebSocket(DEFAULT_WS_PREFIX + `?auth=${this.AuthToken()}`);
 
     this._wsOnmessage({
       type: MESSAGE_TYPE_STATUS,
@@ -100,8 +98,26 @@ class Hyperfox {
 
   _fetch(type, path, params) {
     const queryString = qs.stringify(params)
-    return fetch(this.prefix + path + '?' + queryString)
+    const url = `${this.prefix}${path}?${queryString}`
+    const init = {
+      headers: {
+        'Authorization': `Bearer ${this.AuthToken()}`
+      }
+    }
+    return fetch(url, init)
       .then(res => res.json())
+  }
+
+  AuthToken() {
+    return window.localStorage.getItem(AUTH_KEY)
+  }
+
+  SetAuthToken(auth) {
+    window.localStorage.setItem(AUTH_KEY, auth)
+  }
+
+  Connect() {
+    this._openWebsocket()
   }
 
   Subscribe(callback) {
