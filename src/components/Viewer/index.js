@@ -3,6 +3,12 @@ import React from 'react'
 import API from '../../lib/hyperfox'
 import * as utils from '../../lib/utils'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faAngleDoubleDown,
+  faDownload
+} from '@fortawesome/free-solid-svg-icons'
+
 const iframeStyle = {
   border: '1px solid #dbdbdb',
   borderRadius: '4px',
@@ -54,7 +60,7 @@ export default class Viewer extends React.Component {
         className='button'
       >
         <span className='icon'>
-          <i className='fas fa-angle-double-down'></i>
+          <FontAwesomeIcon icon={faAngleDoubleDown} />
         </span>
         <span>Raw</span>
       </a>
@@ -67,7 +73,7 @@ export default class Viewer extends React.Component {
         className='button'
       >
         <span className='icon'>
-          <i className='fas fa-download'></i>
+          <FontAwesomeIcon icon={faDownload} />
         </span>
         <span>Download body</span>
       </a>

@@ -2,6 +2,12 @@ import React from 'react'
 
 import classNames from 'classnames'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faCaretLeft,
+  faCaretRight
+} from '@fortawesome/free-solid-svg-icons'
+
 export default class Paginator extends React.Component {
 
   constructor(props) {
@@ -95,7 +101,7 @@ export default class Paginator extends React.Component {
           disabled={!showPrevious}
         >
           <span className='icon'>
-            <i className='fas fa-caret-left'></i>
+            <FontAwesomeIcon icon={faCaretLeft} />
           </span>
           Previous
         </button>
@@ -110,7 +116,7 @@ export default class Paginator extends React.Component {
         >
           Next page
           <span className='icon'>
-            <i className='fas fa-caret-right'></i>
+            <FontAwesomeIcon icon={faCaretRight} />
           </span>
         </button>
         <ul className='pagination-list'>

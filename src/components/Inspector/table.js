@@ -3,6 +3,12 @@ import React from 'react'
 import API from '../../lib/hyperfox'
 import * as utils from '../../lib/utils'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faInfoCircle,
+  faDownload
+} from '@fortawesome/free-solid-svg-icons'
+
 export default class Table extends React.Component {
 
   constructor(props) {
@@ -83,12 +89,12 @@ export default class Table extends React.Component {
             <p className='buttons'>
               <a href={`/records/${record.UUID}`} className='button'>
                 <span className='icon has-text-info is-medium'>
-                  <i className='fas fa-info-circle fa-lg'></i>
+                  <FontAwesomeIcon icon={faInfoCircle} />
                 </span>
               </a>
               <a href={API.RecordResponseURL(record.UUID)} className='button'>
                 <span className='icon has-text-success is-medium'>
-                  <i className='fas fa-download fa-lg'></i>
+                  <FontAwesomeIcon icon={faDownload} />
                 </span>
               </a>
             </p>

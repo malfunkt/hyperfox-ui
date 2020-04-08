@@ -1,5 +1,10 @@
 import React from 'react';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faFilter
+} from '@fortawesome/free-solid-svg-icons'
+
 export default class Search extends React.Component {
   constructor(props) {
     super(props)
@@ -38,7 +43,7 @@ export default class Search extends React.Component {
             placeholder='Search terms...'
           />
           <span className='icon is-left'>
-            <i className='fas fa-filter'></i>
+            <FontAwesomeIcon icon={faFilter} />
           </span>
         </p>
       </div>
