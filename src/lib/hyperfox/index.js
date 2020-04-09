@@ -1,10 +1,16 @@
-const HOSTNAME = window.location.hostname
-
-const DEFAULT_API_PREFIX=`http://${HOSTNAME}:8899`
-const DEFAULT_WS_PREFIX=`ws://${HOSTNAME}:8899/live`
-
 const W3CWebSocket = require('websocket').w3cwebsocket
 const qs = require('qs')
+
+const QUERY_PARAMS = qs.parse(window.location.search, {ignoreQueryPrefix: true})
+
+const HOSTNAME = () => {
+  const hostname = QUERY_PARAMS['source'] || window.localStorage.getItem('source') || window.location.hostname
+  window.localStorage.setItem('source', hostname)
+  return hostname
+}
+
+const DEFAULT_API_PREFIX=`http://${HOSTNAME()}`
+const DEFAULT_WS_PREFIX=`ws://${HOSTNAME()}/live`
 
 const STATUS_DISCONNECTED   = 0
 const STATUS_FAILURE        = 1
@@ -145,28 +151,33 @@ class Hyperfox {
     this._wsOnmessage = callback
   }
 
+  SignURL(url) {
+    return `${url}?auth=${this.AuthToken()}`
+  }
+
   RecordRequestEmbedURL(uuid) {
-    return `${this.prefix}/records/${uuid}/request/embed`
+    return this.SignURL(`${this.prefix}/records/${uuid}/request/embed`)
   }
 
   RecordRequestWireURL(uuid) {
-    return `${this.prefix}/records/${uuid}/request/wire`
+    return this.SignURL(`${this.prefix}/records/${uuid}/request/raw`)
   }
 
   RecordRequestURL(uuid) {
-    return `${this.prefix}/records/${uuid}/request`
+    return this.SignURL(`${this.prefix}/records/${uuid}/request`)
   }
 
   RecordResponseEmbedURL(uuid) {
-    return `${this.prefix}/records/${uuid}/response/embed`
+    return this.SignURL(`${this.prefix}/records/${uuid}/response/embed`)
+
   }
 
   RecordResponseWireURL(uuid) {
-    return `${this.prefix}/records/${uuid}/response/wire`
+    return this.SignURL(`${this.prefix}/records/${uuid}/response/raw`)
   }
 
   RecordResponseURL(uuid) {
-    return `${this.prefix}/records/${uuid}/response`
+    return this.SignURL(`${this.prefix}/records/${uuid}/response`)
   }
 
   GetRecordMeta(uuid) {

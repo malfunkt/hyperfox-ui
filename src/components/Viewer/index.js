@@ -44,9 +44,12 @@ export default class Viewer extends React.Component {
     return (
       <dl>
         {
-          names.map((name) => {
+          names.map((name, i) => {
             return header[name].map(value => {
-              return [<dt title={name}>{name}</dt>, <dd><input className='input' readonly='readonly' onClick={(ev) => {ev.target.select()}} value={value} /></dd>]
+              return [
+                <dt key={`dt-${i}`} title={name}>{name}</dt>,
+                <dd key={`dd-${i}`}><input className='input' readOnly='readonly' onClick={(ev) => {ev.target.select()}} value={value} /></dd>
+              ]
             })
           })
         }
