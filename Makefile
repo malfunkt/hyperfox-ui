@@ -12,7 +12,7 @@ start:
 build: test
 	npm run build
 
-statik:
+statik: build
 	statik -src=./build/ -dest ../hyperfox/ui -f
 
 test:
