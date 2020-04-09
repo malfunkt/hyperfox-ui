@@ -201,12 +201,26 @@ export default class Inspector extends React.Component {
         )
       break
       case API.STATUS_CONNECTED:
-        const showRecords = records.length > 0 || queryStatus === QUERY_STATUS_QUERYING
+        const showRecords = records.length > 0
+
         const noRecordsFound = (
           <div className='notification is-info'>
-            No records were found.
+            No records matched your search.
           </div>
         )
+
+        const waitingForRecords = (
+          <div className='notification is-primary'>
+            Hyperfox ready! Waiting for captured requests.
+          </div>
+        )
+
+        const zeroRecords = () => {
+          if (terms !== '') {
+            return noRecordsFound
+          }
+          return waitingForRecords
+        }
 
         body = (
           <div>
@@ -217,7 +231,7 @@ export default class Inspector extends React.Component {
               }}
               terms={terms}
             />
-            {showRecords ? this.renderRecords() : noRecordsFound}
+            {showRecords ? this.renderRecords() : zeroRecords()}
           </div>
         )
       break
