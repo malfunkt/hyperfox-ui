@@ -7,12 +7,15 @@ const W3CWebSocket = require('websocket').w3cwebsocket
 const qs = require('qs')
 
 const STATUS_DISCONNECTED   = 0
-const STATUS_CONNECTING     = 1
-const STATUS_CONNECTED      = 2
+const STATUS_FAILURE        = 1
+const STATUS_CONNECTING     = 2
+const STATUS_CONNECTED      = 3
 
 const MESSAGE_TYPE_STATUS   = 0
 const MESSAGE_TYPE_ERROR    = 1
 const MESSAGE_TYPE_DATA     = 2
+
+const MAX_RETRIES           = 20
 
 const AUTH_KEY = 'auth'
 
@@ -20,6 +23,10 @@ class Hyperfox {
 
   get STATUS_DISCONNECTED() {
     return STATUS_DISCONNECTED
+  }
+
+  get STATUS_FAILURE() {
+    return STATUS_FAILURE
   }
 
   get STATUS_CONNECTING() {
@@ -45,12 +52,14 @@ class Hyperfox {
   constructor(props) {
     this.prefix = DEFAULT_API_PREFIX
     this.status = STATUS_DISCONNECTED
+    this._retries = 0
 
     this._wsOnmessage = () => {}
   }
 
   _openWebsocket() {
     let ws = new W3CWebSocket(DEFAULT_WS_PREFIX + `?auth=${this.AuthToken()}`);
+    this._retries++
 
     this._wsOnmessage({
       type: MESSAGE_TYPE_STATUS,
@@ -58,6 +67,7 @@ class Hyperfox {
     })
 
     ws.onopen = (e) => {
+      this._retries = 0
       this._wsOnmessage({
         type: MESSAGE_TYPE_STATUS,
         data: STATUS_CONNECTED
@@ -82,17 +92,23 @@ class Hyperfox {
     }
 
     ws.onclose = (e) => {
-      this._wsOnmessage({
-        type: MESSAGE_TYPE_STATUS,
-        data: STATUS_DISCONNECTED
-      })
-
-      window.setTimeout(
-        () => {
-          this._openWebsocket()
-        },
-        1000
-      )
+      if (this._retries < MAX_RETRIES) {
+        this._wsOnmessage({
+          type: MESSAGE_TYPE_STATUS,
+          data: STATUS_DISCONNECTED
+        })
+        window.setTimeout(
+          () => {
+            this._openWebsocket()
+          },
+          1000
+        )
+      } else {
+        this._wsOnmessage({
+          type: MESSAGE_TYPE_STATUS,
+          data: STATUS_FAILURE
+        })
+      }
     }
   }
 
@@ -105,7 +121,12 @@ class Hyperfox {
       }
     }
     return fetch(url, init)
-      .then(res => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300) {
+          return res.json()
+        }
+        throw new Error('Failed to connect to backend')
+      })
   }
 
   AuthToken() {

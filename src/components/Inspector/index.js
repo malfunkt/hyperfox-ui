@@ -168,11 +168,38 @@ export default class Inspector extends React.Component {
     )
   }
 
+  buttonRetry() {
+    window.location.reload()
+  }
+
   render() {
-    const {records, terms, status, queryStatus} = this.state
+    const {
+      records,
+      terms,
+      status,
+      queryStatus
+    } = this.state
 
     let body
     switch (status) {
+      case API.STATUS_FAILURE:
+        body = (
+          <div className='notification is-danger content'>
+            <p>
+              Sorry, Hyperfox is not available or you're not authorized to connect to it.
+            </p>
+            <p className='buttons'>
+              <button
+                type='button'
+                className='button is-danger is-inverted is-outlined'
+                onClick={this.buttonRetry}
+              >
+                Retry
+              </button>
+            </p>
+          </div>
+        )
+      break
       case API.STATUS_CONNECTED:
         const showRecords = records.length > 0 || queryStatus === QUERY_STATUS_QUERYING
         const noRecordsFound = (
