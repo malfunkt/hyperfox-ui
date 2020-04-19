@@ -226,7 +226,7 @@ export default class Inspector extends React.Component {
           <div>
             <Search
               onChange={value => {
-                this.setState({terms: value})
+                this.setState({terms: value, selectedPage: 1})
                 this.scheduledUpdateDataSource()
               }}
               terms={terms}
