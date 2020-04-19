@@ -67,10 +67,10 @@ export default class Table extends React.Component {
           <td style={this.rangeWidth(10, 60)}>
             <tt>{record.method}</tt>
           </td>
-          <td style={this.rangeWidth(80, 100000)} title={record.url}>
+          <td style={this.rangeWidth(80, 300)} title={record.url}>
             <tt>{record.url}</tt>
           </td>
-          <td style={this.rangeWidth(60, 220)} title={record.contentType}>
+          <td style={this.rangeWidth(60, 150)} title={record.contentType}>
             <tt>{record.contentType}</tt>
           </td>
           <td style={{...this.rangeWidth(40, 60), ...{'textAlign': 'center'}}}>
@@ -85,7 +85,7 @@ export default class Table extends React.Component {
           <td style={{...this.rangeWidth(40, 120), ...{'textAlign': 'right'}}} title={timeAgo}>
             <tt>{timeAgo}</tt>
           </td>
-          <td style={this.rangeWidth(40, 120)}>
+          <td style={this.rangeWidth(120, 120)}>
             <p className='buttons'>
               <a href={`/records/${record.UUID}`} className='button'>
                 <span className='icon has-text-info is-medium'>

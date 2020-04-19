@@ -5,6 +5,8 @@ import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCaretLeft,
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
   faCaretRight
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -96,6 +98,20 @@ export default class Paginator extends React.Component {
           type='button'
           className='pagination-previous'
           onClick={
+            () => this.handleClick(1)
+          }
+          disabled={!showPrevious}
+        >
+          <span className='icon'>
+            <FontAwesomeIcon icon={faAngleDoubleLeft} />
+          </span>
+          First
+        </button>
+
+        <button
+          type='button'
+          className='pagination-previous'
+          onClick={
             () => this.handleClick(this.state.selected - 1)
           }
           disabled={!showPrevious}
@@ -119,6 +135,21 @@ export default class Paginator extends React.Component {
             <FontAwesomeIcon icon={faCaretRight} />
           </span>
         </button>
+
+        <button
+          type='button'
+          className='pagination-next'
+          onClick={
+            () => this.handleClick(this.state.pages)
+          }
+          disabled={!showNext}
+        >
+          Last
+          <span className='icon'>
+            <FontAwesomeIcon icon={faAngleDoubleRight} />
+          </span>
+        </button>
+
         <ul className='pagination-list'>
           {this.renderPageNumbers()}
         </ul>

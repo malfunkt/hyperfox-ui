@@ -4,7 +4,10 @@ const qs = require('qs')
 const QUERY_PARAMS = qs.parse(window.location.search, {ignoreQueryPrefix: true})
 
 const HOSTNAME = () => {
-  const hostname = QUERY_PARAMS['source'] || window.localStorage.getItem('source') || window.location.hostname
+  let hostname = QUERY_PARAMS['source'] || window.localStorage.getItem('source') || window.location.hostname
+  if (hostname.indexOf(':') < 0) {
+    hostname = hostname + ':4891'
+  }
   window.localStorage.setItem('source', hostname)
   return hostname
 }

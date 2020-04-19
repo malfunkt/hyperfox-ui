@@ -13,7 +13,7 @@ const iframeStyle = {
   border: '1px solid #dbdbdb',
   borderRadius: '4px',
   width: '100%',
-  height: '8em'
+  height: '350px'
 }
 
 export default class Viewer extends React.Component {
