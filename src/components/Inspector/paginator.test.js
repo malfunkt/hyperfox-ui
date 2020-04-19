@@ -29,11 +29,11 @@ const findByClassName = (testInstance, className) => {
 }
 
 const findPaginationPrevious = (instance) => {
-  return findByClassName(instance, 'pagination-previous')
+  return findByClassName(instance, 'button-previous')
 }
 
 const findPaginationNext = (instance) => {
-  return findByClassName(instance, 'pagination-next')
+  return findByClassName(instance, 'button-next')
 }
 
 const findPageNumbers = (instance) => {

@@ -96,7 +96,7 @@ export default class Paginator extends React.Component {
 
         <button
           type='button'
-          className='pagination-previous'
+          className='pagination-previous button-first'
           onClick={
             () => this.handleClick(1)
           }
@@ -110,7 +110,7 @@ export default class Paginator extends React.Component {
 
         <button
           type='button'
-          className='pagination-previous'
+          className='pagination-previous button-previous'
           onClick={
             () => this.handleClick(this.state.selected - 1)
           }
@@ -124,7 +124,7 @@ export default class Paginator extends React.Component {
 
         <button
           type='button'
-          className='pagination-next'
+          className='pagination-next button-next'
           onClick={
             () => this.handleClick(this.state.selected + 1)
           }
@@ -138,7 +138,7 @@ export default class Paginator extends React.Component {
 
         <button
           type='button'
-          className='pagination-next'
+          className='pagination-next button-last'
           onClick={
             () => this.handleClick(this.state.pages)
           }
