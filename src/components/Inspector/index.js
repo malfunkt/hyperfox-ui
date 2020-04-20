@@ -21,7 +21,7 @@ export default class Inspector extends React.Component {
     this.state = {
       terms: queryParams.q || '',
       records: [],
-      pageSize: 50,
+      pageSize: 100,
       selectedPage: queryParams.page || 0,
       totalPages: 1,
       queryStatus: QUERY_STATUS_IDLE,
