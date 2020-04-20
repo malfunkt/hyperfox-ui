@@ -94,8 +94,10 @@ export default class Viewer extends React.Component {
                   <tt>
                     {record.method}
                     &nbsp;
-                    {record.url}
                   </tt>
+                  <div className='control' style={{width: '100%'}}>
+                    <input className='input' value={record.url} readOnly='readonly' onClick={(ev) => {ev.target.select()}} />
+                  </div>
                 </p>
               </header>
               <div className='card-content'>
