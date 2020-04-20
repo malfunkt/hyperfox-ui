@@ -57,6 +57,18 @@ export default class Viewer extends React.Component {
     )
   }
 
+  showPreview(headers) {
+    if (headers['Content-Type']) {
+      for (let i in headers['Content-Type']) {
+        let contentType = headers['Content-Type'][i]
+        if (contentType.match(/text|image|json/)) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
   renderButtonRaw(url) {
     return (
       <a href={url}
@@ -84,6 +96,9 @@ export default class Viewer extends React.Component {
   }
 
   renderRecord(record) {
+    const noPreview = (
+      <div className='notification is-info'>No preview available.</div>
+    )
     return (
       <section className='section'>
         <div className='container is-widescreen'>
@@ -95,9 +110,7 @@ export default class Viewer extends React.Component {
                     {record.method}
                     &nbsp;
                   </tt>
-                  <div className='control' style={{width: '100%'}}>
-                    <input className='input' value={record.url} readOnly='readonly' onClick={(ev) => {ev.target.select()}} />
-                  </div>
+                  <input className='input' value={record.url} readOnly='readonly' onClick={(ev) => {ev.target.select()}} />
                 </p>
               </header>
               <div className='card-content'>
@@ -123,7 +136,9 @@ export default class Viewer extends React.Component {
               </header>
               <div className='card-content'>
                 {this.renderHeaders(record.request_header)}
-                <iframe title='request body' style={iframeStyle} src={API.RecordRequestEmbedURL(record.uuid)}></iframe>
+                {this.showPreview(record.request_header) ?
+                  <iframe title='request body' style={iframeStyle} src={API.RecordRequestEmbedURL(record.uuid)}></iframe>
+                : noPreview}
                 <p className='buttons'>
                   {this.renderButtonRaw(API.RecordRequestWireURL(record.uuid))}
                   {this.renderButtonDownload(API.RecordRequestURL(record.uuid))}
@@ -139,7 +154,9 @@ export default class Viewer extends React.Component {
               </header>
               <div className='card-content'>
                 {this.renderHeaders(record.header)}
-                <iframe title='response body' style={iframeStyle} src={API.RecordResponseEmbedURL(record.uuid)}></iframe>
+                {this.showPreview(record.header) ?
+                  <iframe title='response body' style={iframeStyle} src={API.RecordResponseEmbedURL(record.uuid)}></iframe>
+                : noPreview}
                 <p className='buttons'>
                   {this.renderButtonRaw(API.RecordResponseWireURL(record.uuid))}
                   {this.renderButtonDownload(API.RecordResponseURL(record.uuid))}
