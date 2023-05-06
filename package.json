@@ -14,7 +14,7 @@
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.0",
+    "react-scripts": "^5.0.1",
     "websocket": "^1.0.31"
   },
   "scripts": {
